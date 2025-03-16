@@ -1,0 +1,26 @@
+# Cargar librerías necesarias
+library(readxl)
+library(httr)
+
+# URL del archivo en Zenodo (reemplazar con la URL específica)
+url <- "https://zenodo.org/records/15033758/files/processed_data.xlsx?download=1"
+
+# Nombre del archivo destino temporal
+destfile <- "temp.xlsx"
+
+# Descargar el archivo Excel desde la URL
+tryCatch({
+  GET(url, write_disk(destfile, overwrite = TRUE))
+  
+  # Leer el archivo Excel
+  data <- read_excel(destfile)
+  
+  # Imprimir las primeras filas del dataset
+  print(head(data))
+  
+  # Eliminar el archivo temporal
+  file.remove(destfile)
+  
+}, error = function(e) {
+  cat("Error al descargar o leer el archivo:", conditionMessage(e), "\n")
+})
